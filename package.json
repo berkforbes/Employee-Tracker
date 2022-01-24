@@ -20,6 +20,7 @@
   "homepage": "https://github.com/berkforbes/Employee-Tracker#readme",
   "dependencies": {
     "console.table": "^0.10.0",
+    "dotenv": "^14.2.0",
     "express": "^4.17.2",
     "inquirer": "^8.2.0",
     "mysql2": "^2.3.3"
