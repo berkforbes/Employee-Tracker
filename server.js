@@ -54,33 +54,59 @@ const promptUser = () => {
       const { choices } = answers;
 
       if (choices === "View all departments") {
-        showDepartments();
+        displayDepartments();
       }
 
       if (choices === "View all roles") {
-        showDepartments();
+        displayRoles();
       }
 
       if (choices === "View all employees") {
-        showDepartments();
+        displayEmployees();
       }
 
       if (choices === "Add a department") {
-        showDepartments();
+        addDepartment();
       }
 
       if (choices === "Add a role") {
-        showDepartments();
+        addRole();
       }
 
       if (choices === "Add an employee") {
-        showDepartments();
+        addEmployee();
       }
 
       if (choices === "Update an employee role") {
-        showDepartments();
+        updateRole();
       }
     });
+};
+
+// Function to display dept
+displayDepartments = () => {
+  console.log('Showing All Departments');
+  const sql = `SELECT department.id AS id, department.name AS department FROM department`;
+
+  connection.promise().query(sql, (err, rows) => {
+    if (err) throw (err);
+    console.table(rows);
+    promptUser();
+  });
+};
+
+// Function to display roles
+displayRoles = () => {
+  console.log('Showing All Roles');
+  const sql = `SELECT role.id, role.title, department.name AS department
+               FROM role
+               INNER JOIN department ON role.department_id = department.id`;
+
+  connection.promise().query(sql, (err, rows) => {
+    if (err) throw (err);
+    console.table(rows);
+    promptUser();
+  });
 };
 
 app.listen(PORT, () => {
