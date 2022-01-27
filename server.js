@@ -124,6 +124,25 @@ displayEmployess = () => {
   });
 };
 
+addDepartment= () => {
+  inquirer
+  .prompt([
+    {
+      type: "inout",
+      name: "newDepartment",
+      message: "Enter the name of the department you would like to add",
+      validate: newDept => {
+        if (newDept) {
+          return true;
+      } else {
+        console.log("Please enter a department name");
+          return false;
+        }
+      } 
+    }
+  ])
+}
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
