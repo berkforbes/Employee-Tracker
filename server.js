@@ -109,6 +109,21 @@ displayRoles = () => {
   });
 };
 
+displayEmployess = () => {
+  console.log('Showing All Employees');
+  const sql = `SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title, role.salary, CONCAT (manager.first_name, " ", manager.last_name) AS manager 
+  FROM employee
+  LEFT JOIN role ON employee.role_id = role.id
+  LEFT JOIN department ON role.department_id = department.id
+  LEFT JOIN employee manager ON employee.manager_id = manager.id`
+
+  connection.promise().query(sql, (err, rows) => {
+    if (err) throw (err);
+    console.table(rows);
+    promptUser();
+  });
+};
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
