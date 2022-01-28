@@ -1,7 +1,7 @@
 const express = require("express");
 const PORT = process.env.PORT || 3003;
 const app = express();
-const mysql = require("mysql2");
+const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 
@@ -128,7 +128,7 @@ addDepartment= () => {
   inquirer
   .prompt([
     {
-      type: "inout",
+      type: "input",
       name: "newDepartment",
       message: "Enter the name of the department you would like to add",
       validate: newDept => {
@@ -140,8 +140,82 @@ addDepartment= () => {
         }
       } 
     }
-  ])
+  ])  // Adding new dept info into dept table not working??
+    // .then (answer => {
+    //   const sql = `INSERT INTO department (name) VALUES (?)`;
+    //   connection.query(sql, answer.newDept, (err, results) => {
+    //     if (err) throw (err);
+    //     console.log(answer.newDept + " has been added to departments!")
+
+    //     displayDepartments();
+    //   })
+    // })
 }
+
+addRole = () => {
+  inquirer
+  .prompt([
+    {
+      type: "input",
+      name: "addRole",
+      message: "What is the title of the new role?",
+      validate: newRole => {
+        if (newRole) {
+          return true;
+      } else {
+        console.log("Please enter a role title");
+          return false;
+        }
+      }, 
+      type: "input",
+      name: "addSalary",
+      message: "What is the salary for the new role?",
+      validate: newSalary => {
+        if (newSalary) {
+          return true;
+      } else {
+        console.log("Please enter a salary");
+          return false;
+        }
+      }
+    }
+  ]) 
+      .then(answer => {
+        const params = [answer.newRole, answer.newSalary];
+
+        // get dept id from table
+        const sqlRole = `SELECT name, id FROM department`;
+        connection.promise().query(sqlRole, (err, data) => {
+          if (err) throw err;
+        const dept = data.map(({name, id}) => ({name: name, value: id}))
+
+        inquirer.prompt([
+          {
+            type: 'list', 
+            name: 'dept',
+            message: "What department is this role in?",
+            choices: dept
+          }
+          ])
+            .then(deptRole => {
+              const dept = deptRole.dept;
+              params.push(dept);
+  
+              const sql = `INSERT INTO role (title, salary, department_id)
+                          VALUES (?, ?, ?)`;
+  
+              connection.query(sql, params, (err, result) => {
+                if (err) throw err;
+                console.log(answer.newRole + " has been added to roles!"); 
+  
+                displayRoles();
+         });
+       });
+     });
+   });
+}
+  
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
