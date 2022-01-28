@@ -1,7 +1,7 @@
 const express = require("express");
 const PORT = process.env.PORT || 3003;
 const app = express();
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 
@@ -166,7 +166,9 @@ addRole = () => {
         console.log("Please enter a role title");
           return false;
         }
-      }, 
+      }
+    }, 
+    { 
       type: "input",
       name: "addSalary",
       message: "What is the salary for the new role?",
@@ -193,7 +195,7 @@ addRole = () => {
           {
             type: 'list', 
             name: 'dept',
-            message: "What department is this role in?",
+            message: "What department does this role belong to?",
             choices: dept
           }
           ])
@@ -213,6 +215,25 @@ addRole = () => {
        });
      });
    });
+}
+
+addEmployee = () => {
+  inquirer
+  .prompt([
+    {
+      type: "input",
+      name: "newEmployee",
+      message: "What is the name of the new employee?",
+      validate: newEmployee => {
+        if (newEmployee) {
+          return true;
+      } else {
+        console.log("Please enter new employees name!");
+          return false;
+        }
+      }
+    }
+  ])
 }
   
 
