@@ -88,7 +88,7 @@ displayDepartments = () => {
   console.log('Showing All Departments');
   const sql = `SELECT department.id AS id, department.name AS department FROM department`;
 
-  connection.promise().query(sql, (err, rows) => {
+  connection.query(sql, (err, rows) => {
     if (err) throw (err);
     console.table(rows);
     promptUser();
@@ -102,14 +102,15 @@ displayRoles = () => {
                FROM role
                INNER JOIN department ON role.department_id = department.id`;
 
-  connection.promise().query(sql, (err, rows) => {
+  connection.query(sql, (err, rows) => {
     if (err) throw (err);
     console.table(rows);
     promptUser();
   });
 };
 
-displayEmployess = () => {
+// Function to display employees
+displayEmployees = () => {
   console.log('Showing All Employees');
   const sql = `SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title, role.salary, CONCAT (manager.first_name, " ", manager.last_name) AS manager 
   FROM employee
@@ -117,7 +118,7 @@ displayEmployess = () => {
   LEFT JOIN department ON role.department_id = department.id
   LEFT JOIN employee manager ON employee.manager_id = manager.id`
 
-  connection.promise().query(sql, (err, rows) => {
+  connection.query(sql, (err, rows) => {
     if (err) throw (err);
     console.table(rows);
     promptUser();
@@ -141,15 +142,15 @@ addDepartment= () => {
       } 
     }
   ])  // Adding new dept info into dept table not working??
-    // .then (answer => {
-    //   const sql = `INSERT INTO department (name) VALUES (?)`;
-    //   connection.query(sql, answer.newDept, (err, results) => {
-    //     if (err) throw (err);
-    //     console.log(answer.newDept + " has been added to departments!")
+    .then (answer => {
+      const sql = `INSERT INTO department (name) VALUES (?)`;
+      connection.query(sql, answer.newDept, (err, results) => {
+        if (err) throw (err);
+        console.log(answer.newDept + " has been added to departments!")
 
-    //     displayDepartments();
-    //   })
-    // })
+        displayDepartments();
+      })
+    })
 }
 
 addRole = () => {
