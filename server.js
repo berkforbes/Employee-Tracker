@@ -193,8 +193,8 @@ addRole = () => {
         const params = [answer.newRole, answer.newSalary];
 
         // get dept id from table
-        const sqlRole = `SELECT name, id FROM department`;
-        connection.promise().query(sqlRole, (err, data) => {
+        const queryRole = `SELECT name, id FROM department`;
+        connection.query(queryRole, (err, data) => {
           if (err) throw err;
         const dept = data.map(({name, id}) => ({name: name, value: id}))
 
