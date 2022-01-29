@@ -130,7 +130,7 @@ addDepartment= () => {
   .prompt([
     {
       type: "input",
-      name: "newDepartment",
+      name: "newDept",
       message: "Enter the name of the department you would like to add",
       validate: newDept => {
         if (newDept) {
@@ -143,12 +143,18 @@ addDepartment= () => {
     }
   ])  // Adding new dept info into dept table not working??
     .then (answer => {
-      const sql = `INSERT INTO department (name) VALUES (?)`;
-      connection.query(sql, answer.newDept, (err, results) => {
+      
+      connection.query(
+        `INSERT INTO department SET?`,
+        {name: answer.newDept
+        });
+      const query = 'SELECT * FROM department';
+      connection.query(query, function(err, res) {
         if (err) throw (err);
         console.log(answer.newDept + " has been added to departments!")
-
+        
         displayDepartments();
+      
       })
     })
 }
