@@ -260,9 +260,9 @@ addEmployee = () => {
     .then((answer) => {
       const params = [answer.firstName, answer.lastName];
 
-      const sqlRole = `SELECT role.id, role.title FROM role`;
+      const roleTable = `SELECT role.id, role.title FROM role`;
 
-      connection.query(sqlRole, (err, data) => {
+      connection.query(roleTable, (err, data) => {
         if (err) throw err;
 
         const roles = data.map(({ id, title }) => ({ name: title, value: id }));
@@ -318,6 +318,72 @@ addEmployee = () => {
       });
     });
 };
+
+
+// Update an employee
+
+updateRole = () => {
+ const employeeTable = `SELECT * FROM employee`;
+
+ connection.query(employeeTable, (err, data) => {
+  if (err) throw err;
+
+  const employeeList = data.map(({ id, first_name, last_name }) => ({
+    name: first_name + " " + last_name,
+    value: id,
+  }));
+
+    inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "name",
+        message: "Who would you like to update?",
+        choices: employeeList
+      }
+    ])
+    .then(employeeSelection => {
+      const employee = employeeSelection.name;
+      const params = [];
+      params.push(employee);
+
+      const roleTable = `SELECT * FROM role`;
+
+      connection.query(roleTable, (err, data) => {
+        if (err) throw err;
+
+        const roleList = data.map(({ id, title}) => ({name: title, value:id}));
+
+          inquirer
+          .prompt([
+            {
+              type: 'list',
+              name: 'role',
+              message: "Choose a new role for employee",
+              choices: roleList
+            }
+          ])
+          .then(roleSelection => {
+            const role = roleSelection.role;
+            params.push(role);
+
+            let employee = params[0]
+            params [0] = role
+            params[1] = employee
+
+            const sqlUpdate = `UPDATE employee SET role_id = ? WHERE id=?`;
+
+            connection.query(sqlUpdate, (err, result) => {
+              if (err) throw err;
+              console.log("Employee role was updated");
+
+              displayEmployees();
+            })
+        })
+      })      
+    })
+ })
+}
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
