@@ -156,7 +156,7 @@ addRole = () => {
     .prompt([
       {
         type: "input",
-        name: "addRole",
+        name: "newRole",
         message: "What is the title of the new role?",
         validate: (newRole) => {
           if (newRole) {
@@ -169,7 +169,7 @@ addRole = () => {
       },
       {
         type: "input",
-        name: "addSalary",
+        name: "newSalary",
         message: "What is the salary for the new role?",
         validate: (newSalary) => {
           if (newSalary) {
@@ -183,7 +183,7 @@ addRole = () => {
     ])
     .then((answer) => {
       const params = [answer.newRole, answer.newSalary];
-
+      console.log(params)
       // get dept id from table
       const queryRole = `SELECT name, id FROM department`;
       connection.query(queryRole, (err, data) => {
@@ -202,7 +202,7 @@ addRole = () => {
           .then((deptRole) => {
             const dept = deptRole.dept;
             params.push(dept);
-
+            console.log(params)
             const sql = `INSERT INTO role (title, salary, department_id)
                           VALUES (?, ?, ?)`;
 
