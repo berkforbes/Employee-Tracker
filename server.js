@@ -371,9 +371,9 @@ updateRole = () => {
             params [0] = role
             params[1] = employee
 
-            const sqlUpdate = `UPDATE employee SET role_id = ? WHERE id=?`;
+            const sqlUpdate = `UPDATE employee SET role_id =? WHERE id=?`;
 
-            connection.query(sqlUpdate, (err, result) => {
+            connection.query(sqlUpdate, params, (err, result) => {
               if (err) throw err;
               console.log("Employee role was updated");
 
