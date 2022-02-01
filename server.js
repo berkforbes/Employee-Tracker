@@ -1,6 +1,3 @@
-const express = require("express");
-const PORT = process.env.PORT || 3003;
-const app = express();
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
@@ -129,7 +126,6 @@ displayEmployees = () => {
   });
 };
 
-// Add a dept
 addDepartment = () => {
   inquirer
     .prompt([
@@ -165,7 +161,7 @@ addRole = () => {
     .prompt([
       {
         type: "input",
-        name: "addRole",
+        name: "newRole",
         message: "What is the title of the new role?",
         validate: (newRole) => {
           if (newRole) {
@@ -178,7 +174,7 @@ addRole = () => {
       },
       {
         type: "input",
-        name: "addSalary",
+        name: "newSalary",
         message: "What is the salary for the new role?",
         validate: (newSalary) => {
           if (newSalary) {
@@ -192,7 +188,7 @@ addRole = () => {
     ])
     .then((answer) => {
       const params = [answer.newRole, answer.newSalary];
-
+      console.log(params)
       // get dept id from table
       const queryRole = `SELECT name, id FROM department`;
       connection.query(queryRole, (err, data) => {
@@ -211,7 +207,7 @@ addRole = () => {
           .then((deptRole) => {
             const dept = deptRole.dept;
             params.push(dept);
-
+            console.log(params)
             const sql = `INSERT INTO role (title, salary, department_id)
                           VALUES (?, ?, ?)`;
 
@@ -260,9 +256,9 @@ addEmployee = () => {
     .then((answer) => {
       const params = [answer.firstName, answer.lastName];
 
-      const roleTable = `SELECT role.id, role.title FROM role`;
+      const sqlRole = `SELECT role.id, role.title FROM role`;
 
-      connection.query(roleTable, (err, data) => {
+      connection.query(sqlRole, (err, data) => {
         if (err) throw err;
 
         const roles = data.map(({ id, title }) => ({ name: title, value: id }));
@@ -318,73 +314,3 @@ addEmployee = () => {
       });
     });
 };
-
-
-// Update an employee
-
-updateRole = () => {
- const employeeTable = `SELECT * FROM employee`;
-
- connection.query(employeeTable, (err, data) => {
-  if (err) throw err;
-
-  const employeeList = data.map(({ id, first_name, last_name }) => ({
-    name: first_name + " " + last_name,
-    value: id,
-  }));
-
-    inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "name",
-        message: "Who would you like to update?",
-        choices: employeeList
-      }
-    ])
-    .then(employeeSelection => {
-      const employee = employeeSelection.name;
-      const params = [];
-      params.push(employee);
-
-      const roleTable = `SELECT * FROM role`;
-
-      connection.query(roleTable, (err, data) => {
-        if (err) throw err;
-
-        const roleList = data.map(({ id, title}) => ({name: title, value:id}));
-
-          inquirer
-          .prompt([
-            {
-              type: 'list',
-              name: 'role',
-              message: "Choose a new role for employee",
-              choices: roleList
-            }
-          ])
-          .then(roleSelection => {
-            const role = roleSelection.role;
-            params.push(role);
-
-            let employee = params[0]
-            params [0] = role
-            params[1] = employee
-
-            const sqlUpdate = `UPDATE employee SET role_id =? WHERE id=?`;
-
-            connection.query(sqlUpdate, params, (err, result) => {
-              if (err) throw err;
-              console.log("Employee role was updated");
-
-              displayEmployees();
-            })
-        })
-      })      
-    })
- })
-}
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
