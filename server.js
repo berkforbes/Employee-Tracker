@@ -4,6 +4,7 @@ const cTable = require("console.table");
 
 // mysql -u root -p
 
+// .env for safe PW storage
 require("dotenv").config();
 
 const connection = mysql.createConnection({
@@ -26,6 +27,7 @@ welcomeMessage = () => {
   console.log("|                      |");
   console.log("|                      |");
   console.log("------------------------");
+
   promptUser();
 };
 
@@ -47,6 +49,8 @@ const promptUser = () => {
         ],
       },
     ])
+
+    // take user selection a run corresponding function
     .then((answers) => {
       const { choices } = answers;
 
@@ -151,6 +155,7 @@ addDepartment = () => {
     });
 };
 
+// Add a role
 addRole = () => {
   inquirer
     .prompt([
